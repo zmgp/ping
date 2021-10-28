@@ -106,6 +106,7 @@ export default {
               this.$message({
                 type: "success",
                 message: "注册成功！请登录",
+                duration: 1500,
               });
               this.$router.push("/");
             } else {
@@ -119,6 +120,7 @@ export default {
             this.$message({
               type: "info",
               message: "取消输入",
+              duration: 1500,
             });
           });
       } else {
@@ -200,8 +202,16 @@ export default {
   font-weight: bold;
   color: #7a7b7e;
 }
+/* input.el-input__inner {
+  box-sizing: border-box;
+  width: 300px;
+  height: 40px;
+} */
 .input,
 .submit {
+  box-sizing: border-box;
+  width: 480px;
+  height: 40px;
   margin-top: 20px;
 }
 .subbutton {
@@ -239,10 +249,13 @@ export default {
   font-size: 8px;
   margin-left: 5px;
 }
-.UsrnameError,
-.PwdError,
-.EmailError {
-  border: #ff7575 2px solid;
-  border-radius: 7px;
+/* .el-input__inner {
+  border: none;
+} */
+.UsrnameError >>> .el-input__inner,
+.PwdError >>> .el-input__inner,
+.EmailError >>> .el-input__inner {
+  border: #f55 1px solid;
+  border-radius: 5px;
 }
 </style>
