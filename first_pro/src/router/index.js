@@ -40,7 +40,7 @@ router.beforeEach((to,from,next)=>{
     //   }).then(
     //     (response) => {
           // console.log(response.data);
-            if(false){
+            if(true){
                 next();
             }else{
                 alert('无权限访问')

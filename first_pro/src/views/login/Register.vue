@@ -61,6 +61,21 @@
         ></el-input>
         <i class="el-icon-error" v-show="showPwdError">密码输入不一致</i>
       </div>
+
+      <div class="input">
+        <div class="text">邮箱验证</div>
+        <el-input
+          class="input-code"
+          prefix-icon="el-icon-circle-check"
+          placeholder="请输入验证码"
+          v-model="code"
+        >
+        </el-input>
+        <el-button class="codebtn" type="info" plain @click="sendcode"
+          >发送验证码</el-button
+        >
+      </div>
+
       <div class="subbutton">
         <el-Button class="submit" type="primary" size="medium" @click="submit"
           >注册</el-Button
@@ -84,8 +99,11 @@ export default {
       showPwdError: false,
       showUsrnameError: false,
       showEmailError: false,
+      timer: null,
+      code: "",
     };
   },
+
   methods: {
     submit() {
       if (
@@ -97,59 +115,110 @@ export default {
         !this.showUsrnameError &&
         !this.showEmailError
       ) {
-        this.$prompt(`已发送验证码至${this.email},请输入验证码：`, "邮箱验证", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-        })
-          .then(({ value }) => {
-            if (value) {
+        this.$axios({
+          method: "POST",
+          url: "http://192.168.137.1:8083/register/userRegister",
+          data: {
+            username: this.userName,
+            password: this.passWord,
+            email: this.email,
+            code: this.code,
+          },
+        }).then(
+          (response) => {
+            console.log(response.data);
+            if (response.data.code === 200) {
               this.$message({
+                message: `注册成功!返回登录`,
                 type: "success",
-                message: "注册成功！请登录",
                 duration: 1500,
               });
-              this.$router.push("/");
-            } else {
+              this.timer = setInterval(() => {
+                this.$router.push("/");
+              }, 2000);
+            } else if (response.data.code === 70005) {
               this.$message({
                 type: "error",
                 message: "验证码错误",
+                duration: 1500,
               });
+            } else if (response.data.code === 20005) {
+              this.$message({
+                message: "用户已存在",
+                type: "error",
+                duration: 1500,
+              });
+            } else {
+              alert("未知错误");
             }
-          })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "取消输入",
-              duration: 1500,
-            });
-          });
+          },
+          (error) => {
+            alert(error.message);
+          }
+        );
       } else {
         this.$message({
           type: "error",
           message: "请填写正确信息",
         });
       }
-      // axios({
-      //   method: "POST",
-      //   url: "http://192.168.137.121:8083/login/login",
-      //   header: {
-      //     userName:this.userName,
-      //     passWord: this.passWord,
-      //     email:this.emial
-      //   },
-      // }).then(
-      //   (response) => {
-      //     // console.log(response.data);
-      //     if (true) {
-      //       this.$router.push("/");
-      //     } else {
-      //       alert("用户名重复");
-      //     }
-      //   },
-      //   (error) => {
-      //     alert(error.message);
-      //   }
-      // );
+    },
+    sendcode() {
+      if (this.email === "") {
+        this.$message({
+          message: "邮箱不能为空",
+          type: "error",
+          duration: 1500,
+          offset: 320,
+          center: true,
+        });
+      } else if (this.showEmailError) {
+        this.$message({
+          message: "请填写正确格式的邮箱",
+          type: "error",
+          duration: 1500,
+          offset: 320,
+          center: true,
+        });
+      } else {
+        this.$axios({
+          method: "POST",
+          url: "http://192.168.137.1:8083/register/emailSend",
+          params: {
+            email: this.email,
+          },
+          // headers: {
+          //   "Content-Type": "application/x-www-form-urlencoded",
+          // },
+        }).then(
+          (response) => {
+            console.log(response.data);
+            if (response.data.code === 200) {
+              // this.$router.push("/");
+              this.$message({
+                message: "验证码已发送至邮箱",
+                type: "success",
+                duration: 1500,
+                offset: 320,
+                center: true,
+              });
+            } else if (response.data.code === 20005) {
+              this.$message({
+                message: "邮箱已存在",
+                type: "error",
+                duration: 1500,
+                offset: 320,
+                center: true,
+              });
+            } else {
+              alert("未知错误");
+            }
+          },
+          (error) => {
+            alert(error.message);
+          }
+        );
+      }
     },
     verifyName() {
       this.showUsrnameError = this.userName.length < 2 ? true : false;
@@ -159,7 +228,7 @@ export default {
     },
     verifyEmail() {
       let verify = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
-      if (!verify.test(this.email)) {
+      if (!verify.test(this.email) && this.email !== "") {
         this.showEmailError = true;
       } else {
         this.showEmailError = false;
@@ -175,6 +244,10 @@ export default {
       this.showPwdError = false;
     },
   },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    this.timer = null;
+  },
 };
 </script>
 
@@ -185,7 +258,7 @@ export default {
 }
 .container {
   width: 550px;
-  height: 400px;
+  height: 420px;
   box-sizing: border-box;
   padding: 15px 20px 15px 50px;
   border-radius: 20px;
@@ -202,11 +275,6 @@ export default {
   font-weight: bold;
   color: #7a7b7e;
 }
-/* input.el-input__inner {
-  box-sizing: border-box;
-  width: 300px;
-  height: 40px;
-} */
 .input,
 .submit {
   box-sizing: border-box;
@@ -219,7 +287,7 @@ export default {
   justify-content: center;
 }
 .submit {
-  width: 300px;
+  width: 320px;
   height: 30px;
   display: flex;
   justify-content: center;
@@ -231,7 +299,12 @@ export default {
 .input-pwd2 {
   width: 300px;
 }
-
+.input-code {
+  width: 150px;
+}
+.codebtn {
+  margin-left: 38px;
+}
 .text {
   display: inline-block;
   color: #7a7b7e;
@@ -249,9 +322,6 @@ export default {
   font-size: 8px;
   margin-left: 5px;
 }
-/* .el-input__inner {
-  border: none;
-} */
 .UsrnameError >>> .el-input__inner,
 .PwdError >>> .el-input__inner,
 .EmailError >>> .el-input__inner {
