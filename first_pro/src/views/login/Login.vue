@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import SIdentify from "./SIdentify.vue";
+// import SIdentify from "./SIdentify.vue";
 import { uuid } from "vue-uuid";
 import CobwebParticles from "./CobwebParticles.vue";
 export default {
