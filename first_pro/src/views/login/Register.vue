@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import CobwebParticles from "./CobwebParticles.vue";
+import CobwebParticles from "../animation/CobwebParticles.vue";
 export default {
   name: "Register",
   components: { CobwebParticles },

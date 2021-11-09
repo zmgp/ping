@@ -67,7 +67,7 @@
 <script>
 import SIdentify from "./SIdentify.vue";
 import { uuid } from "vue-uuid";
-import CobwebParticles from "./CobwebParticles.vue";
+import CobwebParticles from "../animation/CobwebParticles.vue";
 export default {
   name: "Login",
   components: { SIdentify, CobwebParticles },
