@@ -299,7 +299,7 @@ export default {
 .input-pwd2 {
   width: 300px;
 }
-.input-code {
+.input .input-code {
   width: 150px;
 }
 .codebtn {

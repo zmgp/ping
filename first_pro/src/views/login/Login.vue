@@ -47,7 +47,7 @@
 
       <div class="regout">
         <div class="forgotpwd">
-          <span>忘记密码？</span>
+          <span @click="forgotpwd">忘记密码？</span>
         </div>
         <div class="regin">
           没有账号？<span class="register" @click="register"
@@ -83,9 +83,9 @@ export default {
       imgurl: "",
     };
   },
-  created() {
-    this.refreshCode();
+  mounted() {
     this.uuid = uuid.v1();
+    this.refreshCode();
   },
   methods: {
     verifyName() {},
@@ -94,8 +94,11 @@ export default {
       // this.identifyCode = "";
       // this.makeCode(this.identifyCodes, 4);
       this.$axios({
-        method: "GET",
-        url: "http://192.168.137.1:8083/login/captcha",
+        method: "POST",
+        // params: {
+        //   uuid: this.uuid,
+        // },
+        url: `http://192.168.137.1:8083/login/captcha/${this.uuid}`,
         responseType: "blob",
       }).then(
         (response) => {
@@ -145,17 +148,19 @@ export default {
       // }
       this.$axios({
         method: "POST",
-        url: "http://192.168.137.1:8083/login/login",
-        params: {
+        url: `http://192.168.137.1:8083/login/login/${this.uuid}`,
+        data: {
           username: this.userName,
           password: this.passWord,
           idfCode: this.idfCode,
-          uuid: this.uuid,
         },
       }).then(
         (response) => {
-          console.log(response.data);
-          //     localStorage.setItem("token", response.data.token);
+          console.log(response);
+          // console.log(this.$cookie.get("token"));
+          // console.log(this.$cookie.keys());
+          console.log(response.data.data.token);
+          localStorage.setItem("token", response.data.data.token);
           //     if (response.data.code === 200) {
           //       console.log(this.$router);
           //       this.$router.push("/home");
@@ -171,6 +176,9 @@ export default {
         }
       );
       // this.$router.push("/home");
+    },
+    forgotpwd() {
+      this.$router.push("./forgotpwd");
     },
     register() {
       this.$router.push("/register");

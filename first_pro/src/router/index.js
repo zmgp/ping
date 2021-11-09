@@ -1,6 +1,7 @@
 import VueRouter from "vue-router"
 
 import Login from '../views/login/Login'
+import ForgotPwd from '../views/login/ForgotPwd'
 import Register from '../views/login/Register'
 import Home from '../views/Home'
 
@@ -12,6 +13,13 @@ const router = new VueRouter({
             name:'登录',
             component:Login,
             meta:{title:'登录'},
+
+        },
+        {
+            path:'/forgotpwd',
+            name:'找回密码',
+            component:ForgotPwd,
+            meta:{title:'找回密码'},
 
         },
         {
