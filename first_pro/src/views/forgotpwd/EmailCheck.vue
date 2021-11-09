@@ -1,56 +1,51 @@
 <template>
   <div>
-    <div class="container">
-      <p class="title">找回密码</p>
-      <div class="input">
-        <el-input
-          class="input-email"
-          prefix-icon="el-icon-message"
-          placeholder="请输入邮箱"
-          clearable
-          v-model="email"
-          @focus="emailfocus"
-          @blur="verifyEmail"
-          :class="{ EmailError: showEmailError }"
-        >
-        </el-input>
-        <div class="emailerr">
-          <i class="el-icon-error" v-show="showEmailError">请填写正确的邮箱</i>
-        </div>
+    <div class="input">
+      <el-input
+        class="input-email"
+        prefix-icon="el-icon-message"
+        placeholder="请输入邮箱"
+        clearable
+        v-model="email"
+        @focus="emailfocus"
+        @blur="verifyEmail"
+        :class="{ EmailError: showEmailError }"
+      >
+      </el-input>
+      <div class="emailerr">
+        <i class="el-icon-error" v-show="showEmailError">请填写正确的邮箱</i>
       </div>
+    </div>
 
-      <div class="input">
-        <el-input
-          class="input-code"
-          prefix-icon="el-icon-circle-check"
-          placeholder="请输入验证码"
-          v-model="code"
-        >
-        </el-input>
-        <el-button class="codebtn" type="info" plain @click="sendcode"
-          >发送验证码</el-button
-        >
-      </div>
+    <div class="input">
+      <el-input
+        class="input-code"
+        prefix-icon="el-icon-circle-check"
+        placeholder="请输入验证码"
+        v-model="code"
+      >
+      </el-input>
+      <el-button class="codebtn" type="info" plain @click="sendcode"
+        >发送验证码</el-button
+      >
+    </div>
 
-      <div class="subbutton">
-        <el-Button
-          class="submit"
-          type="primary"
-          size="medium"
-          @click="submit"
-          :disabled="isdisabled"
-          >确定</el-Button
-        >
-      </div>
+    <div class="subbutton">
+      <el-Button
+        class="submit"
+        type="primary"
+        size="medium"
+        @click="submit"
+        :disabled="isdisabled"
+        >确定</el-Button
+      >
     </div>
   </div>
 </template>
 
 <script>
-import CobwebParticles from "../animation/CobwebParticles.vue";
 export default {
-  name: "ForgotPwd",
-  components: { CobwebParticles },
+  name: "EmailCheck",
   data() {
     return {
       email: "",
@@ -115,7 +110,7 @@ export default {
     },
     submit() {
       if (this.email && this.code && !this.showEmailError) {
-        this.$router.push("/");
+        this.$router.push("/forgotpwd/pwdreset");
         // this.$axios({
         //   method: "POST",
         //   url: "http://192.168.137.1:8083/register/userRegister",
@@ -151,31 +146,6 @@ export default {
 </script>
 
 <style scoped>
-* {
-  margin: 0 auto;
-  padding: 0;
-}
-.container {
-  width: 500px;
-  height: 300px;
-  box-sizing: border-box;
-  padding: 15px 50px;
-  border-radius: 20px;
-  box-shadow: 0px 2px 12px 0px rgba(105, 105, 105, 0.07);
-  background: rgba(255, 255, 255, 0.5);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.title {
-  font-size: 20px;
-  margin: 10px 0px 15px;
-  text-align: center;
-  font-weight: bold;
-  color: #7a7b7e;
-}
 .input-email {
   margin-top: 15px;
 }
@@ -191,7 +161,7 @@ export default {
   justify-content: center;
 }
 .submit {
-  width: 200px;
+  width: 300px;
   height: 30px;
   margin: 30px;
   display: flex;

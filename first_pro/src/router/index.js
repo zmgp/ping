@@ -1,7 +1,9 @@
 import VueRouter from "vue-router"
 
 import Login from '../views/login/Login'
-import ForgotPwd from '../views/login/ForgotPwd'
+import ForgotPwd from '../views/forgotpwd/ForgotPwd'
+import EmailCheck from '../views/forgotpwd/EmailCheck'
+import PwdReset from '../views/forgotpwd/PwdReset'
 import Register from '../views/login/Register'
 import Home from '../views/Home'
 
@@ -20,6 +22,26 @@ const router = new VueRouter({
             name:'找回密码',
             component:ForgotPwd,
             meta:{title:'找回密码'},
+            children:[
+                {
+                    path:'emailcheck',
+                    component:EmailCheck,
+                    meta:{title:'忘记密码-邮箱验证'},
+                },
+                {
+                    path:'pwdreset',
+                    component:PwdReset,
+                    meta:{title:'忘记密码-密码重置'},
+                    // 独享路由守卫，只有前置
+                    beforeEnter: (to, from, next) => {
+                        if(localStorage.getItem('username') === 'SHU'){
+                            next();
+                        }else{
+                            alert('无权限访问')
+                        }
+                    }
+                }
+            ]
 
         },
         {

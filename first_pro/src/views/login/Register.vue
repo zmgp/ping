@@ -275,8 +275,7 @@ export default {
   font-weight: bold;
   color: #7a7b7e;
 }
-.input,
-.submit {
+.input {
   box-sizing: border-box;
   width: 480px;
   height: 40px;
@@ -289,6 +288,7 @@ export default {
 .submit {
   width: 320px;
   height: 30px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
