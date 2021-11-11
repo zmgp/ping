@@ -1,5 +1,6 @@
 import VueRouter from "vue-router"
 
+
 import Login from '../views/login/Login'
 import ForgotPwd from '../views/forgotpwd/ForgotPwd'
 import EmailCheck from '../views/forgotpwd/EmailCheck'
@@ -25,21 +26,26 @@ const router = new VueRouter({
             children:[
                 {
                     path:'emailcheck',
+                    name:'emailcheck',
                     component:EmailCheck,
                     meta:{title:'忘记密码-邮箱验证'},
                 },
                 {
                     path:'pwdreset',
+                    name:'pwdreset',
                     component:PwdReset,
                     meta:{title:'忘记密码-密码重置'},
+                    // props($route){
+                    //             return {email:$route.params.email,title:$route.params.code}
+                    //         }
                     // 独享路由守卫，只有前置
-                    beforeEnter: (to, from, next) => {
-                        if(localStorage.getItem('username') === 'SHU'){
-                            next();
-                        }else{
-                            alert('无权限访问')
-                        }
-                    }
+                    // beforeEnter: (to, from, next) => {
+                    //     if(localStorage.getItem('username') === 'SHU'){
+                    //         next();
+                    //     }else{
+                    //         alert('无权限访问')
+                    //     }
+                    // }
                 }
             ]
 
@@ -61,28 +67,14 @@ const router = new VueRouter({
 router.beforeEach((to,from,next)=>{
     // console.log('前置路由守卫',to,from);
     if(to.meta.isAuth){
-    //     axios({
-    //     method: "POST",
-    //     url: "http://192.168.137.121:8083/login/login",
-    //     header: {
-    //       token: localStorage.getItem('token'),
-    //     },
-    //   }).then(
-    //     (response) => {
-          // console.log(response.data);
-            if(true){
-                next();
-            }else{
-                alert('无权限访问')
-            }
-    //     },
-    //     (error) => {
-    //       alert(error.message);
-    //     }
-    //   );
-
+        if(localStorage.getItem('token')!==null){
+            next();
+        }
+        else{
+            alert('请先登录');
+        }
     }else{
-        next()
+        next();
     }
 
 })

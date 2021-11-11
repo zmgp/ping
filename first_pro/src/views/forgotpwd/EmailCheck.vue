@@ -51,7 +51,7 @@ export default {
       email: "",
       showEmailError: false,
       code: "",
-      isdisabled: true,
+      isdisabled: false,
     };
   },
   methods: {
@@ -79,8 +79,8 @@ export default {
       } else {
         this.$axios({
           method: "POST",
-          url: "http://192.168.137.1:8083/register/emailSend",
-          params: {
+          url: "http://192.168.137.1:8083/forget/sendEmail",
+          data: {
             email: this.email,
           },
           // headers: {
@@ -98,6 +98,12 @@ export default {
                 center: true,
               });
               this.isdisabled = false;
+            } else if (response.data.code === 50001) {
+              this.$message({
+                message: "邮箱不存在",
+                type: "error",
+                duration: 800,
+              });
             } else {
               alert("未知错误");
             }
@@ -110,33 +116,39 @@ export default {
     },
     submit() {
       if (this.email && this.code && !this.showEmailError) {
-        this.$router.push("/forgotpwd/pwdreset");
-        // this.$axios({
-        //   method: "POST",
-        //   url: "http://192.168.137.1:8083/register/userRegister",
-        //   data: {
-        //     email: this.email,
-        //     code: this.code,
-        //   },
-        // }).then(
-        //   (response) => {
-        //     console.log(response.data);
-        //     if (response.data.code === 200) {
-        //     //   this.$router.push("/");
-        //     } else if (response.data.code === 70005) {
-        //       this.$message({
-        //         type: "error",
-        //         message: "验证码错误",
-        //         duration: 1500,
-        //       });
-        //     } else {
-        //       alert("未知错误");
-        //     }
-        //   },
-        //   (error) => {
-        //     alert(error.message);
-        //   }
-        // );
+        // this.$router.push("/forgotpwd/pwdreset");
+        this.$axios({
+          method: "POST",
+          url: "http://192.168.137.1:8083/forget/verifyEmail",
+          data: {
+            email: this.email,
+            code: this.code,
+          },
+        }).then(
+          (response) => {
+            console.log(response.data);
+            if (response.data.code === 200) {
+              console.log(response.data.data.username);
+              localStorage.setItem("username", response.data.data.username);
+              this.$router.push({
+                name: "pwdreset",
+                params: {
+                  email: this.email,
+                  code: this.code,
+                },
+              });
+            } else if (response.data.code === 70005) {
+              this.$message({
+                type: "error",
+                message: "验证码错误",
+                duration: 1500,
+              });
+            }
+          },
+          (error) => {
+            alert(error.message);
+          }
+        );
       } else {
         this.isdisabled = true;
       }

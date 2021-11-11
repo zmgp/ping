@@ -42,12 +42,13 @@ export default {
   name: "PwdReset",
   data() {
     return {
-      userName: "",
+      userName: `${localStorage.getItem("username")}`,
       passWord: "",
       repeatPassword: "",
       showPwdError: false,
     };
   },
+  //   props: ["email", "code"],
   methods: {
     verifyPwd() {
       this.showPwdError = this.passWord !== this.repeatPassword;
@@ -56,32 +57,36 @@ export default {
       this.showPwdError = false;
     },
     submit() {
+      console.log(this.$route.params.email);
       if (this.passWord && this.repeatPassword && !this.showPwdError) {
-        this.$router.push("/");
-        // this.$axios({
-        //   method: "POST",
-        //   url: "http://192.168.137.1:8083/register/userRegister",
-        //   data: {
-        //     password: this.password,
-        //   },
-        // }).then(
-        //   (response) => {
-        //     console.log(response.data);
-        //     if (response.data.code === 200) {
-        this.$message({
-          message: `密码重置成功!返回登录`,
-          type: "success",
-          duration: 1500,
-        });
-        //     //   this.$router.push("/");
-        //     }  else {
-        //       alert("未知错误");
-        //     }
-        //   },
-        //   (error) => {
-        //     alert(error.message);
-        //   }
-        // );
+        // this.$router.push("/");
+        this.$axios({
+          method: "POST",
+          url: "http://192.168.137.1:8083/forget/resetPWD",
+          data: {
+            email: this.$route.params.email,
+            code: this.$route.params.code,
+            password: this.repeatPassword,
+          },
+        }).then(
+          (response) => {
+            console.log(response.data);
+            if (response.data.code === 200) {
+              this.$message({
+                message: `密码重置成功!返回登录`,
+                type: "success",
+                duration: 1500,
+              });
+              this.$router.push("/");
+            } else {
+              alert("未知错误");
+            }
+          },
+          (error) => {
+            alert(error.message);
+          }
+        );
+        console.log(this.username);
       } else {
         this.$message({
           type: "error",

@@ -161,15 +161,15 @@ export default {
           // console.log(this.$cookie.keys());
           console.log(response.data.data.token);
           localStorage.setItem("token", response.data.data.token);
-          //     if (response.data.code === 200) {
-          //       console.log(this.$router);
-          //       this.$router.push("/home");
-          //     } else {
-          //       this.$notify.error({
-          //         title: "错误",
-          //         message: "账号或密码错误",
-          //       });
-          //     }
+          if (response.data.code === 200) {
+            console.log(this.$router);
+            this.$router.push("/home");
+          } else {
+            this.$notify.error({
+              title: "错误",
+              message: "账号或密码错误",
+            });
+          }
         },
         (error) => {
           alert(error.message);
